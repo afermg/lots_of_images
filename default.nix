@@ -36,9 +36,16 @@ let
             inherit pname version;
             hash = "sha256-/eRr1pjQCCVd7vVBHFmzXA6HUpXoNb9geffiqyLyFus=";
           };
+
+          # We need this because the patch is has line carriages
+          prePatch = ''
+            ${pkgs.dos2unix}/bin/dos2unix ./setup.py
+          '';
+          
           patches = [ ./imagecodecs-deps-nix.patch ];
           patchFlags = [ "--binary" ];
           doCheck = false;
+          
           nativeBuildInputs = [
             pkgs.pkg-config
             super.cython
