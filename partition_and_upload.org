@@ -1,0 +1,12 @@
+#+TITLE: Upload batches of experiments to zenodo
+
+List file sizes and sort by name
+
+#+begin_src bash
+  find data -mindepth 2 -maxdepth 2 -exec du -m {} + | sort -k2 > files.txt  
+#+end_src
+
+#+begin_src awk
+awk -f split_under_50G.awk
+#+end_src
+
