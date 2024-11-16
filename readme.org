@@ -1,0 +1,4 @@
+#+TITLE: Tools for dealing with large images
+
+- Awk script to partition files for batch uploading to zeonodo
+- Image compression codecs (so far bzip seems to outperform them)
