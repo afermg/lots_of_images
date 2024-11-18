@@ -1,7 +1,9 @@
 # The input file is obtained using 'find data -mindepth 2 -maxdepth 2 -exec du -m {} + | sort -k2 > files.txt'
-BEGIN {n=-1};
+BEGIN {i=-1};
 {if ($2 ~ /Acq.txt/) # Use the acquisition file as separator
-    {i+=1; size=$1; meta[i]=$2; meta_size=$1;}
+    {
+	i++; size=$1; meta[i]=$2; meta_size=$1;
+    }
     else {
 	{
 	    if ($2 ~ /.txt/) { # Fill up metadata array
@@ -16,7 +18,7 @@ BEGIN {n=-1};
 		else
 		{ # Extend contend and add the new files
 		    meta[i+1]=meta[i];
-		    content[i]=$2;
+		    content[i+1]=$2;
 		    size = $1 + meta_size;
 		    i++;
 		}}}}}
