@@ -16,6 +16,7 @@ Upload multiple time lapse experiments to Zenodo.
     ...
   - split_under_50G.awk
   - dirs_to_zenodo.sh
+```
     
 
 1. Make sure that the metadata files are found at the top
