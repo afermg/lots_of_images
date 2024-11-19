@@ -1,4 +1,41 @@
 #+TITLE: Tools for dealing with large images
 
-- Awk script to partition files for batch uploading to Zenodo
+* Zenodo partitioner and uploader
+Upload multiple time lapse experiments to Zenodo.
+```
+- root
+  - experiment1
+    - metadata1_Acq.txt
+    - metadata2_log.txt
+      ...
+    - site1.zarr
+    - site2.zarr
+      ...
+  - experiment2
+    ...
+  - split_under_50G.awk
+  - dirs_to_zenodo.sh
+    
+
+1. Make sure that the metadata files are found at the top
+#+begin_src bash
+  for i in 
+#+end_src
+   
+2. List file sizes and files; sort by name
+#+begin_src bash
+  find . -mindepth 2 -maxdepth 2 -exec du -m {} + | sort -k2 > files.txt  
+#+end_src
+
+3. Partition experiment files based on file size
+#+begin_src awk
+  awk -f split_under_50G.awk > batched_files.txt
+#+end_src
+
+4. Upload files and create a manifest.csv file
+#+begin_src bash
+  bash dirs_to_zenodo.sh batched_files.txt | tee upload_log.txt
+#+end_src
+
+* Test multiple encoders to minimise space footprint
 - Image compression codecs (so far bzip seems to outperform them)
