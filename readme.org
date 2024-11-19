@@ -1,4 +1,5 @@
 #+TITLE: Tools for dealing with large images
+Collection of tools to deal with large and/or many images
 
 * Zenodo partitioner and uploader
 Upload multiple time lapse experiments to Zenodo.
@@ -19,7 +20,9 @@ Upload multiple time lapse experiments to Zenodo.
 
 1. Make sure that the metadata files are found at the top
 #+begin_src bash
-  for i in 
+   for i in $(find */*.txt);d do
+     mv $i "$(dirname $i)/0_$(basename $i)";
+   done
 #+end_src
    
 2. List file sizes and files; sort by name
