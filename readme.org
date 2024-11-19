@@ -3,7 +3,7 @@ Collection of tools to deal with large and/or many images
 
 * Zenodo partitioner and uploader
 Upload multiple time lapse experiments to Zenodo.
-```
+#+begin_src
 - root
   - experiment1
     - metadata1_Acq.txt
@@ -16,7 +16,7 @@ Upload multiple time lapse experiments to Zenodo.
     ...
   - split_under_50G.awk
   - dirs_to_zenodo.sh
-```
+#+end_src
     
 
 1. Make sure that the metadata files are found at the top
