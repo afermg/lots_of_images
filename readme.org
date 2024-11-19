@@ -5,25 +5,28 @@ Collection of tools to deal with large and/or many images
 Upload multiple time lapse experiments to Zenodo.
 #+begin_src
 - root
-  - experiment1
-    - metadata1_Acq.txt
-    - metadata2_log.txt
+  -data
+    - experiment1
+      - metadata1_Acq.txt
+      - metadata2_log.txt
+        ...
+      - site1.zarr
+      - site2.zarr
+        ...
+    - experiment2
       ...
-    - site1.zarr
-    - site2.zarr
-      ...
-  - experiment2
-    ...
-  - split_under_50G.awk
-  - dirs_to_zenodo.sh
+  - src
+    - split_under_50G.awk
+    - dirs_to_zenodo.sh
 #+end_src
     
 
 1. Make sure that the metadata files are found at the top
 #+begin_src bash
-   for i in $(find */*.txt);d do
-     mv $i "$(dirname $i)/0_$(basename $i)";
-   done
+  cd data
+  for i in $(find */*.txt);d do
+    mv $i "$(dirname $i)/0_$(basename $i)";
+  done
 #+end_src
    
 2. List file sizes and files; sort by name
@@ -33,12 +36,12 @@ Upload multiple time lapse experiments to Zenodo.
 
 3. Partition experiment files based on file size
 #+begin_src awk
-  awk -f split_under_50G.awk > batched_files.txt
+  awk -f ../src/split_under_50G.awk > batched_files.txt
 #+end_src
 
 4. Upload files and create a manifest.csv file
 #+begin_src bash
-  bash dirs_to_zenodo.sh batched_files.txt | tee upload_log.txt
+  bash ../src/dirs_to_zenodo.sh batched_files.txt | tee upload_log.txt
 #+end_src
 
 * Test multiple encoders to minimise space footprint
