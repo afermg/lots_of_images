@@ -1,7 +1,6 @@
 #!/usr/bin/env bash
 ZENODO_ENDPOINT="https://zenodo.org"
 DEPOSITION_PREFIX="${ZENODO_ENDPOINT}/api/deposit/depositions"
-DIR_TO_VERSION="$1"
 
 get_deposition_endpoint() {
     # $1 is the ORIGINAL_ID, if there is an existing deposition
@@ -69,14 +68,11 @@ upload_metadata() {
     # $2 is the experiment name, which will determine the title
     echo -e "{\"metadata\": {
 		     \"title\": \"${2}\",
-		     \"creators\": [
-			 {
-			     \"name\": \"Alán F. Muñoz\"
-			 }
-		     ],
+		     \"creators\": [{\"name\": \"Alán F. Muñoz\"},{\"name\": \"Peter S. Swain\"},{ \"name\": \"Swain Lab\"}],
 	\"description\":\"High throughput time lapse experiment. Details can be found on the 'txt' files inside.\",
-	\"upload_type\": \"dataset\",
-	\"access_right\": \"open\"
+\"upload_type\": \"dataset\",
+\"access_right\": \"open\",
+\"keywords\": [\"S. cerevisiae\",\"yeast\",\"microfluidics\",\"microscopy\",\"raw\",\"swainlab\",\"timelapse\",\"aliby\"]
 		 }}" > metadata.json
 
     NEW_DEPOSITION_ENDPOINT="${DEPOSITION_PREFIX}/${1}"
@@ -99,24 +95,31 @@ publish_deposition(){
 }
 
 
-i=0
+i=1
 prev_name=""
 
 validate_token
 
+pwd
+MANIFEST_FILE="manifest.csv"
+echo "experiment,part,deposition" > $MANIFEST_FILE
 while read line; do
     array=($line)
     expt_name=$(basename $(dirname "${array[0]}"))
     if [[ "${expt_name}" == "${prev_expt}" ]]; then
 	i=$(( $i + 1 ))
     else
-	i=0
+	i=1
     fi
+
     DEPOSITION_ENDPOINT=$(get_deposition_endpoint "")
-    echo "Deposition endpoint (outside) is ${DEPOSITION_ENDPOINT}"
+    echo "Deposition endpoint is ${DEPOSITION_ENDPOINT}"
+
     NEW_DEPOSITION=$(create_new_deposition "${DEPOSITION_ENDPOINT}")
-    
-    echo "New deposition (outside) is ${NEW_DEPOSITION}"
+    echo "New deposition is ${NEW_DEPOSITION}"
+    echo "${expt_name},${i},${NEW_DEPOSITION}" >> manifest.csv
+
+    upload_metadata ${NEW_DEPOSITION} "${expt_name} (part ${i})"
     BUCKET=$(get_bucket ${NEW_DEPOSITION})
     printf "Processing ${expt_name}, chunk ${i}\n"
     for FILE in "${array[@]}"; do
@@ -131,8 +134,7 @@ while read line; do
 	    upload_file ${BUCKET} ${FILE}
 	fi
     done
-    upload_metadata ${NEW_DEPOSITION} "${expt_name}_${i}"
     echo "Publishing deposition ${NEW_DEPOSITION}"
     publish_deposition "${NEW_DEPOSITION}"
     prev_expt="${expt_name}"
-done <${1}
+done < "${1}"
