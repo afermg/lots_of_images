@@ -1,0 +1,3 @@
+#+TITLE: Metadata of microfluidic experiments
+
+This folder contains metadata on a series of experiments performed during 2019 and 2023 (`microfluidics_registry.org`). Some of the datasets were lost, but the ones that were saved were ploaded to zenodo, with the deposition id indicated on `manifest.csv`.
